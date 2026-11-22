@@ -1,6 +1,6 @@
-# Klasifikasi Jenis Bencana & Tingkat Kerusakan — Statistics Explore 2026
+# Statistics Explore 2026: Klasifikasi Jenis Bencana & Tingkat Kerusakan
 
-🥉 **Juara 3, Big Data Competition — Statistics Explore 2026**
+🥉 **Juara 3, Big Data Competition Statistics Explore 2026**
 
 Dari sebuah foto, model menebak **jenis bencana** (banjir / gempa bumi / kebakaran) dan
 **tingkat kerusakannya** (ringan / sedang / berat).
@@ -28,21 +28,21 @@ Laporan lengkap beserta output setiap langkah ada di
 
 ## Tiga keputusan yang paling menentukan
 
-Tidak ada satu pun yang soal memperbesar model.
+Ketiganya tidak menyangkut ukuran model.
 
 1. **Validasi dikelompokkan per kejadian.** Dataset ini berisi banyak potongan frame video
    dan crop dari kejadian yang sama. Dengan fold per near-duplicate (pHash), skor validasi
-   menggelembung **0,097**. Tetangga terdekat tanpa pelatihan apa pun hampir menyamai model
+   menggelembung 0,097. Tetangga terdekat tanpa pelatihan apa pun hampir menyamai model
    terlatih. Klaster kejadian dibentuk dari kemiripan fitur DINOv3 (cosine ≥ 0,92) yang
    digabung dengan grup pHash, lalu dipakai sebagai grup `StratifiedGroupKFold`.
 2. **Penomoran kelas mengikuti urutan folder.** Panitia menomori `_kerusakan` menurut urutan
    alfabetis folder (BERAT=1, RINGAN=2, SEDANG=3), bukan menurut tingkat keparahan. Koreksi ini
-   saja bernilai **+0,167** di leaderboard. Pelatihan memakai urutan semantik, dan konversi
+   saja bernilai +0,167 di leaderboard. Pelatihan memakai urutan semantik, dan konversi
    dilakukan sekali saat menulis submission.
 3. **Satu model khusus untuk tiap jenis bencana.** Setelah `_jenis` mencapai 0,994, 91,5% sisa
    kesalahan adalah tertukarnya dua tingkat yang bersebelahan, dan polanya berbeda per bencana
    (ketinggian air, keruntuhan struktur, luas area terbakar). ConvNeXt-Tiny khusus per jenis
-   menaikkan akurasi kerusakan OOF dari 0,7814 ke 0,8169, dan leaderboard dari **0,807 ke 0,844**.
+   menaikkan akurasi kerusakan OOF dari 0,7814 ke 0,8169, dan leaderboard dari 0,807 ke 0,844.
 
 ## Arsitektur
 
@@ -65,14 +65,14 @@ Bobot gabungan per sumbu (Dirichlet + perbaikan lokal, di OOF)
 TTA (flip × 2 skala × 5 fold) → submission
 ```
 
-**Kepala hierarchical.** Tahap 1 memprediksi jenis. Tahap 2 memprediksi kerusakan dari fitur
+**Kepala hierarchical:** tahap 1 memprediksi jenis. Tahap 2 memprediksi kerusakan dari fitur
 backbone yang disambung dengan softmax jenis.
 
-**Pelatihan.** RandomResizedCrop, flip horizontal, rotasi ±15°, dan perubahan
+**Pelatihan:** RandomResizedCrop, flip horizontal, rotasi ±15°, dan perubahan
 brightness/contrast/saturation. Mixup dan CutMix bergantian, label smoothing 0,1, dropout 0,3,
 AdamW (weight decay 0,05) dengan OneCycleLR, mixed precision.
 
-**Spesialis per jenis.** Dilatih hanya pada gambar jenis tersebut, dengan fold yang sama persis.
+**Spesialis per jenis:** dilatih hanya pada gambar jenis tersebut, dengan fold yang sama persis.
 Pada data uji, gambar diarahkan ke spesialis sesuai jenis *prediksi*. Pada OOF, baris yang
 jenisnya salah ditebak dinetralkan agar skor validasi tidak lebih optimistis daripada
 kondisi data uji.
@@ -113,8 +113,8 @@ Karena itu bobot dicari terpisah untuk tiap sumbu.
 | Perataan prediksi antar gambar uji yang mirip | −0,03 s/d −0,13 |
 | Pseudo-labeling, DANN, CORAL, kalibrasi prior, resolusi 448 px | Tanpa efek atau negatif |
 
-Pelajaran yang berulang: kenaikan di validasi silang saja tidak cukup. Sebuah gagasan hanya
-diterima kalau validasi dan bukti independen bergerak ke arah yang sama.
+Kenaikan di validasi silang saja tidak cukup untuk menerima sebuah gagasan. Validasi dan bukti
+independen harus bergerak ke arah yang sama.
 
 ---
 
@@ -149,7 +149,9 @@ pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu126
 pip install -r requirements.txt
 ```
 
-**2. Data.** Unduh dataset dari halaman kompetisi, lalu letakkan di root repo dengan susunan
+**2. Data**
+
+Unduh dataset dari halaman kompetisi, lalu letakkan di root repo dengan susunan
 berikut:
 
 ```text
@@ -180,7 +182,7 @@ python scripts/pipeline.py              # jalankan; tahap yang sudah selesai dil
 | `bobot` | `output_effnet/bobot.npz` |
 | `uji` | `output_final/submission.csv` |
 
-Semua tahap dikerjakan di laptop dengan GPU **RTX 3050 4 GB**, dan karena itu ukuran model
+Semua tahap dikerjakan di laptop dengan GPU RTX 3050 4 GB, dan karena itu ukuran model
 dibatasi ke kelas B0/Tiny pada 224–320 px. Tahap pelatihan memakan waktu beberapa jam dan bisa
 dilanjutkan bila terputus: fold yang checkpoint-nya sudah ada otomatis dilewati.
 
@@ -188,7 +190,7 @@ Setelah pipeline selesai, `notebooks/model_final.ipynb` bisa dijalankan ulang. S
 membangun ulang submission dari probabilitas data uji dan memeriksa bahwa hasilnya identik
 dengan `output_final/final_perjenis.csv`.
 
-**Reproduksibilitas.** Seed 42 untuk pembagian fold dan seluruh proses acak. Hasil yang identik
+**Reproduksibilitas:** seed 42 untuk pembagian fold dan seluruh proses acak. Hasil yang identik
 bit-per-bit lintas versi driver CUDA tidak dijamin, tetapi pembagian fold, OOF, bobot, dan
 submission dapat dibangun ulang secara deterministik dari checkpoint yang sama.
 
