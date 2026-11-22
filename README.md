@@ -151,8 +151,9 @@ pip install -r requirements.txt
 
 **2. Data**
 
-Unduh dataset dari halaman kompetisi, lalu letakkan di root repo dengan susunan
-berikut:
+Dataset (9,1 GB) milik panitia dan tidak disertakan di repo ini. Unduh dari
+[halaman kompetisi di Kaggle](https://www.kaggle.com/competitions/big-data-competition-statistics-explore-2026),
+lalu letakkan di root repo dengan susunan berikut:
 
 ```text
 big-data-competition-statistics-explore-2026/SE/
