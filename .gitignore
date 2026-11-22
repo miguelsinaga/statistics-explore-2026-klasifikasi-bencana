@@ -1,0 +1,20 @@
+# Dataset resmi panitia (tidak boleh/tidak perlu diunggah)
+big-data-competition-statistics-explore-2026/
+
+# Keluaran yang dibangkitkan pipeline
+cache_640/
+output_local/
+output_dino/
+output_effnet/
+output_final/*
+!output_final/final_perjenis.csv
+
+# Lingkungan
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.claude/
+.vscode/
+.idea/
